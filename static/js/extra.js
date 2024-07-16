@@ -1,3 +1,4 @@
+// const taskData = JSON.parse(document.getElementById('task-data').textContent);
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
