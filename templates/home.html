@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div id="app">
+        <div class="content">
+            <h1 class="display-4 text-dark">ToDo App</h1>
+        </div>
+
+        <div class="card p-3">
+            <table v-if="allTasks.length" class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Status</th>
+                    <th>Task Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for='task in allTasks' :id="task.id">
+                    <td><input v-model="task.completed" type="checkbox" @change="save(task.id)"></td>
+                    <td v-if="editId !== task.id" :class="task.completed ? 'text-muted': ''">[[task.title]]</td>
+                    <td v-else><input type="text" v-model="task.title" class="form-control"></td>
+                    <td>
+                        <div v-if="editId !== task.id">
+                            {% csrf_token %}
+                            <img width="25px" src="{% static 'images/edit.png' %}" @click="editMode(task.id)">
+                            <img width="25px" src="{% static 'images/trash.png' %}" @click="deleteTask(task.id)">
+                        </div>
+                        <div v-else>
+                            <img width="25px" src="{% static 'images/checked.png' %}" @click="save(task.id)">
+                            <img width="25px" src="{% static 'images/close.png' %}" @click="cancel(task.id)">
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <span v-else class="h3">Great! You have no pending Todo's</span>
+            <hr>
+            <div class="d-flex justify-content-center align-items-center">
+                <span v-if="!newTask" class="btn btn-light mr-2" @click="toggleAddTask()"><strong>+ADD</strong></span>
+                <div v-if="newTask" class="d-flex align-items-center">
+                    <span class="btn btn-danger mr-2" @click="toggleAddTask()"
+                          style="border-radius: 24px;"><strong>X</strong></span>
+                    <input type="text" placeholder="Add new Todo!" v-model="newTaskValue" class="form-control"
+                           style="width: 100%; height: 40px; border-radius: 24px; margin-right: 2%;">
+                    <span class="btn btn-success" @click="submitNewTask()">Submit</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/todo/todo.js' %}"></script>
+{% endblock %}

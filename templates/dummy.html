@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div id="app">
+    <h2>States List</h2>
+    <ul>
+        <li v-for="state in states" :key="state.id">
+            [[ state.name ]] ([[ state.abbreviation ]])
+            <button @click="editState(state)">Edit</button>
+            <button @click="deleteState(state.id)">Delete</button>
+        </li>
+    </ul>
+    <form @submit="addState">
+        <input type="text" v-model="newState.name" placeholder="State Name">
+        <input type="text" v-model="newState.abbreviation" placeholder="Abbreviation">
+        <button type="submit" >Add State</button>
+    </form>
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'js/dummy.js' %}"></script>
+{% endblock %}

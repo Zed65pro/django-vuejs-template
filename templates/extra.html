@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div id="app" class="m-3">
+        {% csrf_token %}
+
+        <!-- Search and Add new task button -->
+        <div class="d-flex justify-content-center mb-3 mt-3">
+            <div class="input-group w-50">
+                <input type="text" v-model="searchQuery" @input="debouncedFetch" placeholder="Search Tasks..."
+                       class="form-control">
+                <div class="input-group-append">
+                    <select v-model="completedFilter" class="custom-select" @input="debouncedFetch">
+                        <option :value="null">All</option>
+                        <option :value="true">Completed</option>
+                        <option :value="false">Pending</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-success ml-2" @click="showAddTaskModal">Add Task</button>
+        </div>
+
+
+        <!--  Table to list filtered tasks -->
+        <div v-if="allTasks.length">
+            <table class="table">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr v-for="task in filteredTasks" :id='task.id'>
+                    <td class="d-flex justify-content-md-around">
+                        <input type="text" v-model="task.title" class="form-control mr-2" :disabled="!isEditing">
+                        <button v-if="isEditing" @click="saveTitleTask(task.id, task.title)"
+                                class="btn btn-primary mr-2">
+                            Save
+                        </button>
+                        <button v-if="isEditing" @click="cancelEditing(task.id)" class="btn btn-secondary">Cancel
+                        </button>
+                    </td>
+                    <td>
+                        <input v-model="task.completed" type="checkbox"
+                               @change="() => saveTask(task.id, task.completed)"
+                               class="w-25 checkbox">
+                    </td>
+                    <td>
+                        <img width="25px" src="{% static 'images/edit.png' %}" @click="() => startEditing(task.title)">
+                        <img width="25px" src="{% static 'images/trash.png' %}" @click="() => deleteTask(task.id)">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-between mt-3">
+                <button class="btn btn-primary" :disabled="!pagination.previous"
+                        @click="fetchTasks(pagination.currentPage - 1)">Previous
+                </button>
+                <span>Page [[ pagination.currentPage ]] of [[ pagination.totalPages ]]</span>
+                <button class="btn btn-primary" :disabled="!pagination.next"
+                        @click="fetchTasks(pagination.currentPage + 1)">Next
+                </button>
+            </div>
+        </div>
+        <div v-else class="d-flex justify-content-center align-items-center">
+            <p>No tasks found.</p>
+        </div>
+
+
+        <!-- Confirm Delete Modal -->
+        <div v-if="isConfirmDelete" class="modal show d-block" id="confirmDeleteModal" tabindex="-1" role="dialog"
+             aria-labelledby="confirmDeleteModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+                        <button type="button" class="close" @click="cancelDelete()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this task?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cancelDelete()">Cancel</button>
+                        <button type="button" class="btn btn-danger" @click="confirmDeletion()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="isConfirmDelete" class="modal-backdrop show"></div>
+
+
+        <!-- Add Task Modal -->
+        <div v-if="showAddTask" class="modal show d-block" id="addTaskModal" tabindex="-1" role="dialog"
+             aria-labelledby="addTaskModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+                        <button type="button" class="close" @click="cancelAddTask()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="newTaskTitle">Task Title</label>
+                            <input type="text" v-model="newTaskTitle" class="form-control" id="newTaskTitle"
+                                   placeholder="Enter task title...">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cancelAddTask()">Cancel</button>
+                        <button type="button" class="btn btn-primary" @click="addTask()">Add Task</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="showAddTask" class="modal-backdrop show"></div>
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/extra.js' %}"></script>
+{% endblock %}
