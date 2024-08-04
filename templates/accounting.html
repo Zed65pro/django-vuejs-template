@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div id="app">
+        <button @click="toggleChart" class="btn btn-success">
+            <i v-if="!chartVisible" class="ft-plus"></i>
+            <i v-if="chartVisible" class="ft-minus"></i>
+            Show Charts
+        </button>
+        <div v-show="chartVisible" class="row">
+            <div class="col-12 col-md-6">
+                <canvas id="accounting-chart"></canvas>
+            </div>
+            <div class="col-12 col-md-6">
+                <canvas id="monthly-usage-chart"></canvas>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script type="text/javascript">
+        var showServiceSpeedUrl = '/api/v1/chart/accounting';
+        var radiusUsage = {{ radius_usage | safe }} ;
+    </script>
+    <script type="text/javascript" src="{% static 'js/chart/accounting.js' %}"></script>
+{% endblock %}
