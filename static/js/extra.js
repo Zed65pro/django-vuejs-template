@@ -65,8 +65,6 @@ new Vue({
                 let completedQuery = ''
                 if (this.completedFilter !== null) completedQuery = `&completed=${this.completedFilter}`;
 
-                console.log(completedQuery);
-
                 let response = await axios.get(`/api/v1/list?page=${page}&search=${this.searchQuery}${completedQuery}`);
                 this.allTasks = response.data.results;
                 this.pagination.next = response.data.next;
@@ -113,11 +111,11 @@ new Vue({
         },
         confirmDeletion: async function () {
             try {
+                console.log("sadasdasd");
                 await axios.delete(`/api/v1/delete/${this.taskIdToDelete}`);
                 this.allTasks = this.allTasks.filter((task) => task.id !== this.taskIdToDelete);
 
                 if (!this.allTasks.length) await this.fetchTasks();
-                console.log(this.allTasks);
             } catch (error) {
                 this.error = error;
             } finally {

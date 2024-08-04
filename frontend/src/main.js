@@ -1,21 +1,3 @@
-// import { createApp } from 'vue'
-// import App from './App.vue'
-//
-//
-// // Function to mount Vue components to specific elements
-// const mountComponent = (Component, props, elementId) => {
-//   const el = document.getElementById(elementId);
-//   if (el) {
-//     createApp(Component, props).mount(el);
-//   }
-// }
-//
-//
-// const radiusUsage = JSON.parse(document.getElementById('radius-usage-data').textContent);
-// const showServiceSpeedUrl = '/api/v1/chart/accounting';
-//
-// createApp(App, { radiusUsage, showServiceSpeedUrl }).mount('#app')
-
 import {createApp} from 'vue';
 import AccountingChart from './components/AccountingChart.vue';
 

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div id="accounting-chart"
+         data-prop-radius-usage="{{ radius_usage}}"
+         data-prop-show-service-speed-url='/api/v1/chart/accounting'>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+
+    <script type="module" src="{% static 'frontend/dist/assets/index.js' %}"></script>
+{% endblock %}

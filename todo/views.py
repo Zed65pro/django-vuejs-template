@@ -1,11 +1,14 @@
+import random
+
 from django.shortcuts import render
+from rest_framework.utils import json
 
 from todo.models import Task
 
 
 # Create your views here.
 
-def mainView(request): 
+def mainView(request):
     return render(request, 'home.html')
 
 
@@ -15,3 +18,22 @@ def dummyView(request):
 
 def extraView(request):
     return render(request, 'extra.html')
+
+
+def chartView(request):
+    # Generate random usage data
+    radius_usage = {
+        'current': {
+            'download': random.randint(100000, 5000000),  # Random download in bytes
+            'upload': random.randint(50000, 2000000)  # Random upload in bytes
+        },
+        'one': {
+            'download': random.randint(100000, 5000000),  # Random download in bytes
+            'upload': random.randint(50000, 2000000)  # Random upload in bytes
+        },
+        'two': {
+            'download': random.randint(100000, 5000000),  # Random download in bytes
+            'upload': random.randint(50000, 2000000)  # Random upload in bytes
+        }
+    }
+    return render(request, 'accounting.html', {'radius_usage': json.dumps(radius_usage)})

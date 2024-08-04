@@ -10,5 +10,8 @@
     "type": "git",
     "url": "https://github.com/guptag911/Django-Vue-Todo-App.git"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "vite": "^5.3.4"
+  }
 }
