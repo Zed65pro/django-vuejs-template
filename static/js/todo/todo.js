@@ -1,88 +1,91 @@
-axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
-axios.defaults.xsrfCookieName = "csrftoken";
+document.addEventListener('DOMContentLoaded', function () {
+    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+    axios.defaults.xsrfCookieName = "csrftoken";
 
-const {createApp} = Vue;
+    const {createApp} = Vue;
 
-createApp({
-    delimiters: ['[[', ']]'],
-    data() {
-        return {
-            allTasks: [],
-            newTask: false,
-            newTaskValue: "",
-            editId: null,
-            oldTask: {}
-        }
-    },
-    mounted() {
-        this.getTasks();
-    },
-    methods: {
-        getTaskfromId: function (id) {
-            return this.allTasks.find(task => task.id === id);
-        },
-        getTasks: async function () {
-            try {
-                let response = await axios.get('/api/v1/list');
-                this.allTasks = response.data.results;
-            } catch (e) {
-                console.log("Error", e);
-                alert("Unable to fetch tasks. Some error occured!", e);
+    createApp({
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                allTasks: [],
+                newTask: false,
+                newTaskValue: "",
+                editId: null,
+                oldTask: {}
             }
         },
-        editMode: function (id) {
-            this.editId = id;
-            this.oldTask = {...this.getTaskfromId(id)}; // Shallow copy
+        mounted() {
+            this.getTasks();
         },
-        deleteTask: async function (id) {
-            try {
-                await axios.delete('/api/v1/delete/' + id);
-                this.allTasks = this.allTasks.filter((task) => task.id !== id);
-            } catch (error) {
-                console.log("Error", error);
-                alert("Unable to delete task. Some error occured!", error);
-            }
-        },
-        save: async function (id) {
-            try {
-                await axios.post('/api/v1/update/' + id, this.getTaskfromId(id));
+        methods: {
+            getTaskfromId: function (id) {
+                return this.allTasks.find(task => task.id === id);
+            },
+            getTasks: async function () {
+                try {
+                    let response = await axios.get('/api/v1/list');
+                    this.allTasks = response.data.results;
+                } catch (e) {
+                    console.log("Error", e);
+                    alert("Unable to fetch tasks. Some error occured!", e);
+                }
+            },
+            editMode: function (id) {
+                this.editId = id;
+                this.oldTask = {...this.getTaskfromId(id)}; // Shallow copy
+            },
+            deleteTask: async function (id) {
+                try {
+                    await axios.delete('/api/v1/delete/' + id);
+                    this.allTasks = this.allTasks.filter((task) => task.id !== id);
+                } catch (error) {
+                    console.log("Error", error);
+                    alert("Unable to delete task. Some error occured!", error);
+                }
+            },
+            save: async function (id) {
+                try {
+                    await axios.post('/api/v1/update/' + id, this.getTaskfromId(id));
+                    this.editId = null;
+                    this.oldTask = {};
+                } catch (error) {
+                    console.log("Error", error);
+                    alert("Unable to edit the task.", error);
+                }
+            },
+            cancel: function (id) {
                 this.editId = null;
-                this.oldTask = {};
-            } catch (error) {
-                console.log("Error", error);
-                alert("Unable to edit the task.", error);
-            }
-        },
-        cancel: function (id) {
-            this.editId = null;
-            const index = this.allTasks.findIndex(task => task.id === id);
-            if (index !== -1) {
-                this.allTasks[index] = {...this.oldTask}; // Restore oldTask using spread operator
-            }
-            this.oldTask = {}; // Clear oldTask
-        },
+                const index = this.allTasks.findIndex(task => task.id === id);
+                if (index !== -1) {
+                    this.allTasks[index] = {...this.oldTask}; // Restore oldTask using spread operator
+                }
+                this.oldTask = {}; // Clear oldTask
+            },
 
-        toggleAddTask: function () {
-            this.newTask = !this.newTask;
-            this.newTaskValue = "";
-        },
-        submitNewTask: async function () {
-            let newTask = {
-                title: this.newTaskValue,
-                completed: false
-            };
+            toggleAddTask: function () {
+                this.newTask = !this.newTask;
+                this.newTaskValue = "";
+            },
+            submitNewTask: async function () {
+                let newTask = {
+                    title: this.newTaskValue,
+                    completed: false
+                };
 
-            try {
-                const response = await axios.post('/api/v1/create', newTask);
-                this.newTask = false; // Hide the new task input form
-                console.log(this.allTasks);
-                this.allTasks.push(response.data); // Add the new task to the local array
-                this.newTaskValue = ""; // Clear the input field for new task
-            } catch (error) {
-                console.error("Error creating task:", error);
-                alert("Unable to add new task", error);
+                try {
+                    const response = await axios.post('/api/v1/create', newTask);
+                    this.newTask = false; // Hide the new task input form
+                    console.log(this.allTasks);
+                    this.allTasks.push(response.data); // Add the new task to the local array
+                    this.newTaskValue = ""; // Clear the input field for new task
+                } catch (error) {
+                    console.error("Error creating task:", error);
+                    alert("Unable to add new task", error);
+                }
             }
+
         }
+    }).mount('#app');
 
-    }
-}).mount('#app');
+});
