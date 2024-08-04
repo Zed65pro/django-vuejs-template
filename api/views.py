@@ -1,3 +1,5 @@
+import random
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,6 +15,41 @@ from dummy.models import State
 from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import PageNumberPagination
 
+
+
+@api_view(['GET'])
+def dummy_accounting_api(request):
+    # Define realistic ranges for download and upload speeds
+    # Values are in bytes per second (B/s)
+    download_ranges = [
+        (50_000, 1_000_000),  # 50 KB/s to 1 MB/s
+        (1_000_000, 10_000_000),  # 1 MB/s to 10 MB/s
+        (10_000_000, 100_000_000),  # 10 MB/s to 100 MB/s
+    ]
+
+    upload_ranges = [
+        (10_000, 500_000),  # 10 KB/s to 500 KB/s
+        (500_000, 5_000_000),  # 500 KB/s to 5 MB/s
+        (5_000_000, 20_000_000),  # 5 MB/s to 20 MB/s
+    ]
+
+    # Randomly choose a range and generate a value within that range
+    download_range = random.choice(download_ranges)
+    upload_range = random.choice(upload_ranges)
+
+    download = random.randint(*download_range)
+    upload = random.randint(*upload_range)
+
+    # Occasionally add some jitter to simulate network fluctuations
+    if random.random() < 0.2:  # 20% chance of jitter
+        jitter_factor = random.uniform(0.8, 1.2)
+        download = int(download * jitter_factor)
+        upload = int(upload * jitter_factor)
+
+    return JsonResponse({
+        'download': download,
+        'upload': upload
+    })
 
 @api_view(['GET'])
 def task_list(request):
