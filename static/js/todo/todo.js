@@ -1,10 +1,11 @@
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
 
-new Vue({
-    el: '#app',
+const {createApp} = Vue;
+
+createApp({
     delimiters: ['[[', ']]'],
-    data: function () {
+    data() {
         return {
             allTasks: [],
             newTask: false,
@@ -13,7 +14,7 @@ new Vue({
             oldTask: {}
         }
     },
-    mounted: function () {
+    mounted() {
         this.getTasks();
     },
     methods: {
@@ -23,7 +24,7 @@ new Vue({
         getTasks: async function () {
             try {
                 let response = await axios.get('/api/v1/list');
-                this.allTasks = response.data;
+                this.allTasks = response.data.results;
             } catch (e) {
                 console.log("Error", e);
                 alert("Unable to fetch tasks. Some error occured!", e);
@@ -74,6 +75,7 @@ new Vue({
             try {
                 const response = await axios.post('/api/v1/create', newTask);
                 this.newTask = false; // Hide the new task input form
+                console.log(this.allTasks);
                 this.allTasks.push(response.data); // Add the new task to the local array
                 this.newTaskValue = ""; // Clear the input field for new task
             } catch (error) {
@@ -83,4 +85,4 @@ new Vue({
         }
 
     }
-})
+}).mount('#app');

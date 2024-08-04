@@ -1,6 +1,6 @@
-// const taskData = JSON.parse(document.getElementById('task-data').textContent);
 axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
 axios.defaults.xsrfCookieName = "csrftoken";
+const {createApp} = Vue;
 
 // Debounce function
 function debounce(func, wait, immediate) {
@@ -21,10 +21,9 @@ function debounce(func, wait, immediate) {
     };
 }
 
-new Vue({
-    el: "#app",
+createApp({
     delimiters: ['[[', ']]'],
-    data: function () {
+    data() {
         return {
             allTasks: [],
             searchQuery: '',
@@ -45,7 +44,7 @@ new Vue({
             completedFilter: null
         }
     },
-    mounted: function () {
+    mounted() {
         this.fetchTasks();
     },
     computed: {
@@ -168,4 +167,4 @@ new Vue({
 
     }
 
-})
+}).mount('#app');
