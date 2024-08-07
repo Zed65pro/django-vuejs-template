@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <div id="app"></div>
+{% endblock %}
+{% block javascript %}
+    <link href="/static/ckeditor/ckeditor.css" media="all" rel="stylesheet">
+    <script src="/static/ckeditor/ckeditor-init.js" data-ckeditor-basepath="/static/ckeditor/ckeditor/"
+            id="ckeditor-init-script"></script>
+    <script src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script src="{% static 'js/form-render.min.js' %}"></script>
+    <script type="text/javascript">
+        const ticketsListCreateApiUrl = "{% url 'ticket-list' %}";
+        const ticketsCreateApiUrl = "{% url 'ticket-create' %}";
+        const ticketReplyCreateApiUrl = "{% url 'ticket-reply-create' pk='0000' %}";
+        const loadTicketTypes = "{% url 'get-ticket-types' %}";
+        const loadTicketSubjects = "{% url 'get-ticket-subjects'%}";
+        const loadTicketTemplate = "{% url 'get-ticket-template' typeId='0000' subjectId='1111' %}";
+        const closeTicketUrl = "{% url 'ticket-close' pk='0000' %}";
+        const profileImage = "{% static 'images/profile.png' %}"
+    </script>
+    <script type="text/javascript" src="{% static 'js/ticket_system.js' %}" defer></script>
+{% endblock %}

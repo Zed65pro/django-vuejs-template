@@ -8,5 +8,6 @@ urlpatterns = [
     path('dummy/', dummyView, name="dummy"),
     path('extra/', extraView, name="extra"),
     path('chart/', chartView, name="chart"),
+    path('tickets/', tickets_view, name="tickets"),
     path('api/v1/', include('api.urls'))
 ]

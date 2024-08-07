@@ -2,12 +2,13 @@ import random
 
 from django.shortcuts import render
 
+from todo.forms import TicketForm
 from todo.models import Task
 
 
 # Create your views here.
 
-def mainView(request): 
+def mainView(request):
     return render(request, 'home.html')
 
 
@@ -17,7 +18,6 @@ def dummyView(request):
 
 def extraView(request):
     return render(request, 'extra.html')
-
 
 
 def chartView(request):
@@ -37,3 +37,7 @@ def chartView(request):
         }
     }
     return render(request, 'accounting.html', {'radius_usage': radius_usage})
+
+
+def tickets_view(request):
+    return render(request, 'tickets.html', {'ticket_form': TicketForm})
